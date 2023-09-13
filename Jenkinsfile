@@ -1,34 +1,34 @@
 pipeline {
-    agent any
-    
-    environment {
-        KUBECONFIG = 'C:\\Users\\vgpan\\.kube\\config' // Provide the path to your kubeconfig file
+  agent any
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
+    stage('Deploy to Minikube') {
+      steps {
+        script {
+          sh "kubectl --kubeconfig='${KUBECONFIG}' apply -f deployment.yaml"
+          sh "kubectl --kubeconfig='${KUBECONFIG}' apply -f service.yaml"
         }
-        
-        stage('Deploy to Minikube') {
-            steps {
-                script {
-                    // Assuming you have kubectl installed
-                    sh "kubectl --kubeconfig=${KUBECONFIG} apply -f deployment.yaml"
-                    sh "kubectl --kubeconfig=${KUBECONFIG} apply -f service.yaml"
-                }
-            }
-        }
+
+      }
     }
 
-    post {
-        success {
-            echo 'Deployment successful!'
-        }
-        failure {
-            echo 'Deployment failed!'
-        }
+  }
+  environment {
+    KUBECONFIG = 'C:\\Users\\vgpan\\.kube\\config'
+  }
+  post {
+    success {
+      echo 'Deployment successful!'
     }
+
+    failure {
+      echo 'Deployment failed!'
+    }
+
+  }
 }
