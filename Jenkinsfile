@@ -15,7 +15,7 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 script {
-                    // Use 'start' to run a command in the background on Windows
+
                     bat 'start kubectl --kubeconfig=${KUBECONFIG} apply -f deployment.yaml'
                     bat 'start kubectl --kubeconfig=${KUBECONFIG} apply -f service.yaml'
                 }
